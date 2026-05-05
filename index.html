@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gantt de Viaje — Europa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+--ink: #1a1208;
+--cream: #f8f3ea;
+--parchment: #ede5d0;
+--gold: #c9973a;
+--gold-light: #f0d080;
+--rust: #c0442a;
+--teal: #2a7a72;
+--teal-light: #a8d8d4;
+--navy: #1e3356;
+--sand: #d4b896;
+--shadow: rgba(26,18,8,0.15);
+
+```
+/* city colors */
+--madrid: #c0442a;
+--berlin: #2a3a5e;
+--cph: #2a7a72;
+--napoles: #e07820;
+--roma: #8b3a62;
+--barna: #1a6b2e;
+```
+
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–cream);
+color: var(–ink);
+min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+background: var(–navy);
+padding: 32px 24px 24px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+header::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at 30% 50%, rgba(201,151,58,0.18) 0%, transparent 70%),
+radial-gradient(ellipse at 70% 50%, rgba(42,122,114,0.15) 0%, transparent 70%);
+}
+header h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(22px, 5vw, 40px);
+color: var(–gold-light);
+letter-spacing: 2px;
+position: relative;
+}
+header p {
+color: var(–teal-light);
+font-size: 13px;
+margin-top: 6px;
+letter-spacing: 1px;
+text-transform: uppercase;
+position: relative;
+}
+
+/* ── LEGEND ── */
+.legend {
+display: flex;
+flex-wrap: wrap;
+gap: 8px 16px;
+padding: 16px 20px;
+background: var(–parchment);
+border-bottom: 2px solid var(–sand);
+justify-content: center;
+}
+.legend-item {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 12px;
+font-weight: 500;
+}
+.legend-dot {
+width: 12px; height: 12px;
+border-radius: 3px;
+flex-shrink: 0;
+}
+
+/* ── TABS ── */
+.tabs {
+display: flex;
+overflow-x: auto;
+background: var(–parchment);
+border-bottom: 2px solid var(–sand);
+padding: 0 12px;
+gap: 4px;
+scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+padding: 10px 18px;
+font-size: 13px;
+font-weight: 600;
+border: none;
+background: transparent;
+cursor: pointer;
+white-space: nowrap;
+border-bottom: 3px solid transparent;
+color: #666;
+transition: all .2s;
+letter-spacing: .5px;
+text-transform: uppercase;
+}
+.tab.active { color: var(–ink); border-bottom-color: var(–gold); }
+.tab:hover { color: var(–ink); }
+
+/* ── SECTIONS ── */
+.section { display: none; padding: 16px; }
+.section.active { display: block; }
+
+/* ── GANTT ── */
+.gantt-wrap {
+overflow-x: auto;
+border-radius: 10px;
+border: 1.5px solid var(–sand);
+background: #fff;
+box-shadow: 0 2px 16px var(–shadow);
+}
+table {
+border-collapse: collapse;
+min-width: 760px;
+width: 100%;
+font-size: 12px;
+}
+thead th {
+background: var(–navy);
+color: var(–gold-light);
+font-family: ‘Playfair Display’, serif;
+font-size: 11px;
+text-transform: uppercase;
+letter-spacing: 1px;
+padding: 10px 8px;
+text-align: center;
+border: 1px solid rgba(255,255,255,0.08);
+position: sticky;
+top: 0;
+z-index: 2;
+}
+thead th:first-child { text-align: left; width: 90px; }
+tbody td {
+border: 1px solid #e8e0d0;
+padding: 0;
+vertical-align: middle;
+text-align: center;
+height: 44px;
+}
+tbody td:first-child {
+padding: 0 8px;
+text-align: left;
+background: var(–parchment);
+font-weight: 600;
+font-size: 11px;
+text-transform: uppercase;
+letter-spacing: .5px;
+color: var(–navy);
+white-space: nowrap;
+min-width: 80px;
+border-right: 2px solid var(–sand);
+}
+.day-header { font-size: 10px; line-height: 1.3; }
+.day-header .date { font-weight: 700; color: var(–gold-light); }
+.day-header .dow { color: #aab; font-weight: 400; }
+
+.cell-block {
+width: 100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 4px 6px;
+font-size: 10px;
+font-weight: 600;
+line-height: 1.2;
+text-align: center;
+cursor: pointer;
+transition: filter .15s;
+min-height: 44px;
+color: #fff;
+letter-spacing: .2px;
+}
+.cell-block:hover { filter: brightness(1.1); }
+.empty { background: transparent; }
+
+/* city colors */
+.madrid-block { background: var(–madrid); }
+.berlin-block { background: var(–berlin); }
+.cph-block { background: var(–cph); }
+.napoles-block { background: var(–napoles); }
+.roma-block { background: var(–roma); }
+.barna-block { background: var(–barna); }
+.transit-block { background: #888; font-size: 9px; }
+.fly-block { background: linear-gradient(135deg, #444 0%, #222 100%); font-size: 9px; }
+.train-block { background: linear-gradient(135deg, #6a4 0%, #384 100%); font-size: 9px; }
+.bus-block { background: linear-gradient(135deg, #67a 0%, #456 100%); font-size: 9px; }
+
+/* ── CITY CARDS ── */
+.city-section { margin-bottom: 28px; }
+.city-header {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 14px;
+padding-bottom: 10px;
+border-bottom: 2px solid var(–sand);
+}
+.city-badge {
+width: 10px; height: 40px;
+border-radius: 4px;
+flex-shrink: 0;
+}
+.city-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 20px;
+font-weight: 700;
+}
+.city-dates {
+font-size: 12px;
+color: #888;
+margin-top: 2px;
+}
+.cards-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+gap: 12px;
+}
+.card {
+border-radius: 10px;
+border: 1.5px solid var(–sand);
+background: #fff;
+overflow: hidden;
+box-shadow: 0 2px 8px var(–shadow);
+}
+.card-head {
+padding: 10px 14px;
+font-size: 11px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: #fff;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.card-body { padding: 12px 14px; }
+.card-body h4 {
+font-family: ‘Playfair Display’, serif;
+font-size: 14px;
+margin-bottom: 8px;
+color: var(–navy);
+}
+.info-row {
+display: flex;
+gap: 6px;
+margin-bottom: 6px;
+font-size: 12px;
+align-items: flex-start;
+line-height: 1.4;
+}
+.info-row .icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+.info-row strong { color: var(–ink); }
+.badge {
+display: inline-block;
+padding: 2px 8px;
+border-radius: 20px;
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: .5px;
+}
+.badge-free { background: #d4edda; color: #155724; }
+.badge-paid { background: #fdecea; color: #7b1111; }
+.badge-tip { background: #fff3cd; color: #856404; }
+
+.attraction-list { list-style: none; }
+.attraction-list li {
+padding: 7px 0;
+border-bottom: 1px solid #f0ebe0;
+display: flex;
+flex-direction: column;
+gap: 3px;
+font-size: 12px;
+}
+.attraction-list li:last-child { border-bottom: none; }
+.attr-name { font-weight: 600; }
+.attr-meta { color: #777; font-size: 11px; }
+
+/* ── TRANSPORT DETAIL ── */
+.transport-card {
+background: #fff;
+border: 1.5px solid var(–sand);
+border-radius: 10px;
+overflow: hidden;
+margin-bottom: 16px;
+box-shadow: 0 2px 8px var(–shadow);
+}
+.transport-head {
+padding: 12px 16px;
+color: #fff;
+display: flex;
+align-items: center;
+gap: 10px;
+font-family: ‘Playfair Display’, serif;
+font-size: 16px;
+}
+.transport-body { padding: 14px 16px; }
+.transport-row {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 12px;
+margin-bottom: 12px;
+}
+.transport-option {
+border: 1.5px solid #e8e0d0;
+border-radius: 8px;
+padding: 10px 12px;
+}
+.transport-option h5 {
+font-size: 12px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: .5px;
+margin-bottom: 6px;
+color: var(–navy);
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.transport-option p { font-size: 12px; line-height: 1.5; }
+.price-tag {
+display: inline-block;
+background: var(–gold);
+color: var(–ink);
+font-weight: 700;
+font-size: 11px;
+padding: 1px 7px;
+border-radius: 20px;
+margin-left: 4px;
+}
+
+.timeline-step {
+display: flex;
+gap: 12px;
+margin-bottom: 10px;
+padding-bottom: 10px;
+border-bottom: 1px solid #f0ebe0;
+font-size: 12px;
+align-items: flex-start;
+}
+.timeline-step:last-child { border-bottom: none; margin-bottom: 0; }
+.step-time {
+font-family: ‘DM Sans’, monospace;
+font-weight: 700;
+color: var(–gold);
+font-size: 13px;
+min-width: 45px;
+margin-top: 2px;
+}
+.step-desc { line-height: 1.5; }
+.step-desc strong { color: var(–navy); }
+
+/* ── MODAL ── */
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.6);
+z-index: 100;
+align-items: center;
+justify-content: center;
+padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+background: var(–cream);
+border-radius: 14px;
+max-width: 480px;
+width: 100%;
+max-height: 85vh;
+overflow-y: auto;
+box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.modal-head {
+padding: 18px 20px;
+border-radius: 14px 14px 0 0;
+color: #fff;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.modal-head h3 { font-family: ‘Playfair Display’, serif; font-size: 18px; }
+.modal-close {
+background: rgba(255,255,255,0.2);
+border: none;
+color: #fff;
+width: 28px; height: 28px;
+border-radius: 50%;
+cursor: pointer;
+font-size: 16px;
+display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 18px 20px; font-size: 13px; line-height: 1.6; }
+.modal-body p { margin-bottom: 8px; }
+.modal-body ul { padding-left: 18px; }
+.modal-body li { margin-bottom: 5px; }
+
+@media (max-width: 480px) {
+.cards-grid { grid-template-columns: 1fr; }
+.transport-row { grid-template-columns: 1fr; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h1>✈️ Viaje por Europa — Mayo / Junio 2026</h1>
+<p>Federico de Dios Córdoba · Santiago Aramburu · César Pedro</p>
+</header>
+
+<!-- LEGEND -->
+
+<div class="legend">
+<div class="legend-item"><div class="legend-dot" style="background:var(--madrid)"></div> Madrid</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--berlin)"></div> Berlín</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--cph)"></div> Copenhague</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--napoles)"></div> Nápoles</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--roma)"></div> Roma</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--barna)"></div> Barcelona</div>
+<div class="legend-item"><div class="legend-dot" style="background:#555"></div> Vuelo/Bus/Tren</div>
+</div>
+
+<!-- TABS -->
+
+<div class="tabs">
+<button class="tab active" onclick="switchTab('gantt')">📅 Gantt</button>
+<button class="tab" onclick="switchTab('transport')">🚌 Traslados</button>
+<button class="tab" onclick="switchTab('madrid')">🇪🇸 Madrid</button>
+<button class="tab" onclick="switchTab('berlin')">🇩🇪 Berlín</button>
+<button class="tab" onclick="switchTab('cph')">🇩🇰 Copenhague</button>
+<button class="tab" onclick="switchTab('napoles')">🇮🇹 Nápoles</button>
+<button class="tab" onclick="switchTab('roma')">🏛️ Roma</button>
+<button class="tab" onclick="switchTab('barna')">🇪🇸 Barcelona</button>
+</div>
+
+<!-- GANTT -->
+
+<div id="section-gantt" class="section active">
+<div class="gantt-wrap">
+<table>
+<thead>
+<tr>
+<th></th>
+<th><div class="day-header"><div class="date">19 May</div><div class="dow">Mar</div></div></th>
+<th><div class="day-header"><div class="date">20 May</div><div class="dow">Mié</div></div></th>
+<th><div class="day-header"><div class="date">21 May</div><div class="dow">Jue</div></div></th>
+<th><div class="day-header"><div class="date">22 May</div><div class="dow">Vie</div></div></th>
+<th><div class="day-header"><div class="date">23 May</div><div class="dow">Sáb</div></div></th>
+<th><div class="day-header"><div class="date">24 May</div><div class="dow">Dom</div></div></th>
+<th><div class="day-header"><div class="date">25 May</div><div class="dow">Lun</div></div></th>
+<th><div class="day-header"><div class="date">26 May</div><div class="dow">Mar</div></div></th>
+<th><div class="day-header"><div class="date">27 May</div><div class="dow">Mié</div></div></th>
+<th><div class="day-header"><div class="date">28 May</div><div class="dow">Jue</div></div></th>
+<th><div class="day-header"><div class="date">29 May</div><div class="dow">Vie</div></div></th>
+<th><div class="day-header"><div class="date">30 May</div><div class="dow">Sáb</div></div></th>
+<th><div class="day-header"><div class="date">31 May</div><div class="dow">Dom</div></div></th>
+<th><div class="day-header"><div class="date">1 Jun</div><div class="dow">Lun</div></div></th>
+<th><div class="day-header"><div class="date">2 Jun</div><div class="dow">Mar</div></div></th>
+<th><div class="day-header"><div class="date">3 Jun</div><div class="dow">Mié</div></div></th>
+<th><div class="day-header"><div class="date">4 Jun</div><div class="dow">Jue</div></div></th>
+<th><div class="day-header"><div class="date">5 Jun</div><div class="dow">Vie</div></div></th>
+<th><div class="day-header"><div class="date">6 Jun</div><div class="dow">Sáb</div></div></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vuelos</td>
+<td><div class="cell-block fly-block" onclick="showModal('modal-fly1')">✈️ BUE→SCL→MAD<br>19:20→17:00</div></td>
+<td><div class="cell-block fly-block" onclick="showModal('modal-fly2')">✈️ MAD→BER<br>20:10→23:10</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block bus-block" onclick="showModal('modal-bus1')">🚌 BER→CPH<br>02:10→10:05</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block fly-block" onclick="showModal('modal-fly3')">✈️ CPH→NAP<br>10:30→13:10</div></td>
+<td class="empty"></td>
+<td><div class="cell-block train-block" onclick="showModal('modal-train1')">🚄 NAP→ROM<br>15:35→16:45</div></td>
+<td class="empty"></td>
+<td><div class="cell-block fly-block" onclick="showModal('modal-fly4')">✈️ ROM→BCN<br>23:05→00:55</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block fly-block" onclick="showModal('modal-fly5')">✈️ MAD→EZE<br>13:15→11:30</div></td>
+</tr>
+<tr>
+<td>Madrid</td>
+<td class="empty"></td>
+<td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Llegada<br>17:00 MAD</div></td>
+<td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
+<td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid<br>Check-in 13:00</div></td>
+<td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
+<td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
+<td class="empty"></td>
+</tr>
+<tr>
+<td>Berlín</td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block berlin-block" onclick="switchTab('berlin')">🇩🇪 Berlín</div></td>
+<td><div class="cell-block berlin-block" onclick="switchTab('berlin')">🇩🇪 Berlín<br>Check-out 11:00</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+</tr>
+<tr>
+<td>Copenhague</td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block cph-block" onclick="switchTab('cph')">🇩🇰 Llegada<br>10:05</div></td>
+<td><div class="cell-block cph-block" onclick="switchTab('cph')">🇩🇰 Copenhague</div></td>
+<td><div class="cell-block cph-block" onclick="switchTab('cph')">🇩🇰 Copenhague</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+</tr>
+<tr>
+<td>Nápoles</td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block napoles-block" onclick="switchTab('napoles')">🇮🇹 Llegada<br>13:10</div></td>
+<td><div class="cell-block napoles-block" onclick="switchTab('napoles')">🇮🇹 Nápoles</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+</tr>
+<tr>
+<td>Roma</td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block roma-block" onclick="switchTab('roma')">🏛️ Llegada<br>16:45</div></td>
+<td><div class="cell-block roma-block" onclick="switchTab('roma')">🏛️ Roma</div></td>
+<td><div class="cell-block roma-block" onclick="switchTab('roma')">🏛️ Roma<br>Check-out 11:00</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+</tr>
+<tr>
+<td>Barcelona</td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td><div class="cell-block barna-block" onclick="switchTab('barna')">🇪🇸 Llegada 00:55</div></td>
+<td><div class="cell-block barna-block" onclick="switchTab('barna')">🇪🇸 Barcelona</div></td>
+<td><div class="cell-block barna-block" onclick="switchTab('barna')">🇪🇸 Barcelona<br>Check-out 11:00</div></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+<td class="empty"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size:11px;color:#999;text-align:center;margin-top:10px">Hacé clic en cualquier bloque de color para ver detalles del trayecto o la ciudad.</p>
+</div>
+
+<!-- TRANSPORT SECTION -->
+
+<div id="section-transport" class="section">
+
+<!-- MAD -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:var(--madrid)">🛬 Llegada MAD — 20 Mayo · 17:00</div>
+<div class="transport-body">
+<div style="margin-bottom:10px">
+<div class="timeline-step"><span class="step-time">17:00</span><div class="step-desc">🛬 Aterrizás en <strong>Madrid Barajas (MAD)</strong> — Terminal según Iberia/LATAM</div></div>
+<div class="timeline-step"><span class="step-time">17:45</span><div class="step-desc">🚇 Tomás <strong>Metro Línea 8</strong> desde "Aeropuerto T4" hasta "Nuevos Ministerios" (~18 min) y hacés transbordo hacia el centro. <strong>O directamente el Bus Exprés 203</strong> desde T4.</div></div>
+<div class="timeline-step"><span class="step-time">~18:30</span><div class="step-desc">🏠 Llegás al Airbnb en <strong>Calle Fray Ceferino González 7</strong></div></div>
+</div>
+<div class="transport-row">
+<div class="transport-option">
+<h5>🚇 Metro L8</h5>
+<p>Aeropuerto T4 → Nuevos Ministerios. Tarifa: <span class="price-tag">~€6.50</span> (billete sencillo + suplemento aeropuerto €3). Frecuencia: cada 5 min. Pago: tarjeta o efectivo en máquina. Horario: 6:00–01:30.</p>
+</div>
+<div class="transport-option">
+<h5>🚌 Bus Exprés 203</h5>
+<p>T4 → Atocha (40 min) o Cibeles (nocturno). Precio: <span class="price-tag">€5</span>. Sale cada 15-20 min. 24h. Pago: efectivo o tarjeta contactless a bordo.</p>
+</div>
+<div class="transport-option">
+<h5>🚕 Taxi</h5>
+<p>Tarifa fija: <span class="price-tag">€33</span> al interior de la M-30. ~30 min. Pago: efectivo o tarjeta. En cualquier terminal.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- BER -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:var(--berlin)">🛬 Llegada BER — 20 Mayo · 23:10</div>
+<div class="transport-body">
+<div style="margin-bottom:10px">
+<div class="timeline-step"><span class="step-time">23:10</span><div class="step-desc">🛬 Aterrizás en <strong>Berlín Brandeburgo (BER)</strong> — Terminal 1</div></div>
+<div class="timeline-step"><span class="step-time">23:30</span><div class="step-desc">🚆 Tomás el <strong>FEX (Flughafen Express)</strong> o <strong>RE7/RB14</strong> desde nivel -2 T1 hacia <strong>Berlin Hauptbahnhof</strong> (32 min). O el S9 en 50 min.</div></div>
+<div class="timeline-step"><span class="step-time">00:10</span><div class="step-desc">🏨 Llegás al <strong>BInCty Hotel</strong> en Gertrud-Kolmar-Straße 5, Mitte (a 5 min del Hauptbahnhof)</div></div>
+</div>
+<div class="transport-row">
+<div class="transport-option">
+<h5>🚆 FEX / RE Tren</h5>
+<p>Aeropuerto → Hauptbahnhof en 30-34 min. Precio zona ABC: <span class="price-tag">€4.70</span>. Cada 30 min. Comprar en máquinas rojas nivel U2. Validar antes de subir.</p>
+</div>
+<div class="transport-option">
+<h5>🚇 S-Bahn S9</h5>
+<p>Aeropuerto → Hauptbahnhof en 50 min. Para en todas las estaciones. Precio: <span class="price-tag">€3.80</span>. Sale cada 20 min. App BVG.</p>
+</div>
+<div class="transport-option">
+<h5>🚕 Taxi / Uber</h5>
+<p>~40-45 min al centro. Precio estimado: <span class="price-tag">€55-70</span>. Uber/Bolt disponibles desde parking P4. Solo usar si no hay tren nocturno.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- BUS BER→CPH -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:#556">🚌 Bus Berlín → Copenhague — 23 Mayo</div>
+<div class="transport-body">
+<div style="margin-bottom:10px">
+<div class="timeline-step"><span class="step-time">00:45</span><div class="step-desc">⚠️ Salís del hotel con equipaje — el bus sale muy temprano</div></div>
+<div class="timeline-step"><span class="step-time">02:10</span><div class="step-desc">🚌 <strong>FlixBus N232</strong> sale de <strong>Berlín ZOB</strong> (Estación Central de Autobuses, Masurenallee 4-6). Asientos: Santiago 3A, Federico 2B, César 3B.</div></div>
+<div class="timeline-step"><span class="step-time">~06:00</span><div class="step-desc">🛂 Cruce frontera — Tener pasaporte/DNI listo. Se requiere para cruzar a Dinamarca.</div></div>
+<div class="timeline-step"><span class="step-time">10:05</span><div class="step-desc">🚌 Llegada a <strong>Copenhague Bus Station</strong> (Carsten Nieburhs Gade 30)</div></div>
+<div class="timeline-step"><span class="step-time">10:30</span><div class="step-desc">🏨 Metro M2 → <strong>Cabinn City</strong>, Mitchellsgade 14 (~15 min). Check-in desde 15:00. Dejar equipaje.</div></div>
+</div>
+<div class="transport-row">
+<div class="transport-option">
+<h5>📋 Reserva FlixBus</h5>
+<p>N° reserva: <strong>333 040 9169</strong>. Precio total: €78.96. Equipaje incluido: bolso de mano 7kg + maleta 20kg por persona. Llegá 15 min antes.</p>
+</div>
+<div class="transport-option">
+<h5>🚇 De la bus station al hotel</h5>
+<p>Estación de buses Copenhague → Hotel Cabinn City: Metro M2 (línea amarilla) ~10 min. Precio: <span class="price-tag">~€5 (36 DKK)</span>. O 15 min caminando.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- CPH LLEGADA -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:var(--cph)">🛬 Llegada CPH — 26 Mayo · 13:10 (vuelo Ryanair)</div>
+<div class="transport-body">
+<p style="font-size:12px;margin-bottom:12px">⚠️ El vuelo a Nápoles sale desde el aeropuerto de Copenhague el <strong>26 de Mayo a las 10:30</strong>. O sea que el 25 de Mayo (último día en Copenhague) debés estar de vuelta.</p>
+<div style="margin-bottom:10px">
+<div class="timeline-step"><span class="step-time">08:30</span><div class="step-desc">Llegás al aeropuerto CPH (check-in Ryanair — llevar 2h antes)</div></div>
+<div class="timeline-step"><span class="step-time">10:30</span><div class="step-desc">✈️ <strong>Ryanair FR 1328</strong> CPH → NAP</div></div>
+<div class="timeline-step"><span class="step-time">13:10</span><div class="step-desc">🛬 Llegada <strong>Aeropuerto de Nápoles (NAP)</strong></div></div>
+<div class="timeline-step"><span class="step-time">13:40</span><div class="step-desc">🚌 Tomás el <strong>Alibus</strong> → Piazza Garibaldi (Stazione Centrale). 20 min. Desde ahí taxi o a pie al alojamiento.</div></div>
+<div class="timeline-step"><span class="step-time">~14:30</span><div class="step-desc">🏨 Check-in <strong>Pagina Storica di Napoli</strong>, Via Carlo de Cesare 64</div></div>
+</div>
+<div class="transport-row">
+<div class="transport-option">
+<h5>🚌 Alibus NAP</h5>
+<p>Aeropuerto → Piazza Garibaldi (est. central). 20 min. Precio: <span class="price-tag">€5</span>. Sale cada 15-20 min (5:45–00:00). Efectivo o tarjeta.</p>
+</div>
+<div class="transport-option">
+<h5>🚕 Taxi NAP</h5>
+<p>Tarifa fija: <span class="price-tag">€18</span> al centro. ~10-15 min. Parada oficial frente a terminal. No subas a autos sin señalizar.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- TREN NAP→ROM -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:var(--roma)">🚄 Tren Nápoles → Roma — 28 Mayo</div>
+<div class="transport-body">
+<div style="margin-bottom:10px">
+<div class="timeline-step"><span class="step-time">11:00</span><div class="step-desc">Check-out <strong>Pagina Storica di Napoli</strong>. Guardar equipaje si es necesario.</div></div>
+<div class="timeline-step"><span class="step-time">14:30</span><div class="step-desc">Ir a <strong>Napoli Centrale</strong> (Piazza Garibaldi)</div></div>
+<div class="timeline-step"><span class="step-time">15:35</span><div class="step-desc">🚄 <strong>Italo Tren 8920</strong> sale desde Napoli Centrale. Coach 3: Federico asiento 7, César asiento 6. Clase: Prima Business.</div></div>
+<div class="timeline-step"><span class="step-time">16:45</span><div class="step-desc">🚄 Llegada <strong>Roma Termini</strong></div></div>
+<div class="timeline-step"><span class="step-time">~17:30</span><div class="step-desc">🏨 Taxi o Metro → <strong>Hotel Alessandrino</strong>, Via Clemente Alessandrino 9, Roma</div></div>
+</div>
+<div class="transport-row">
+<div class="transport-option">
+<h5>🚄 Italo Tren</h5>
+<p>Ticket code: <strong>QCY7FS</strong>. Precio: €39.80 (2 adultos). Pagado. Llevar código QR digital o impreso.</p>
+</div>
+<div class="transport-option">
+<h5>🏨 Roma Termini → Hotel</h5>
+<p>Hotel Alessandrino está en la zona Fuori le Mura. Metro B desde Termini o taxi ~15 min. Taxi: ~€15-20. Metro + caminata: €1.50.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- VUELO ROM→BCN -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:var(--barna)">✈️ Roma Fiumicino → Barcelona — 30 Mayo · 23:05</div>
+<div class="transport-body">
+<div style="margin-bottom:10px">
+<div class="timeline-step"><span class="step-time">11:00</span><div class="step-desc">Check-out <strong>Hotel Alessandrino</strong></div></div>
+<div class="timeline-step"><span class="step-time">19:30</span><div class="step-desc">Salís al aeropuerto. <strong>Leonardo Express</strong> desde Roma Termini cada 15 min. Llegar al menos 2h antes (Ryanair).</div></div>
+<div class="timeline-step"><span class="step-time">20:05</span><div class="step-desc">🚂 Leonardo Express → Roma Fiumicino (32 min). O FL1 (tren regional, €8, sale desde Termini).</div></div>
+<div class="timeline-step"><span class="step-time">23:05</span><div class="step-desc">✈️ <strong>Ryanair FR 6986</strong> Roma Fiumicino → Barcelona El Prat. Reserva KSU5RV</div></div>
+<div class="timeline-step"><span class="step-time">00:55</span><div class="step-desc">🛬 Llegada <strong>Barcelona El Prat (BCN)</strong> — 31 Mayo</div></div>
+<div class="timeline-step"><span class="step-time">01:20</span><div class="step-desc">🚇 Metro L9 Sud → centro o Aerobús. <strong>Apartamento Noemi</strong>, Carrer de Floridablanca 24, Eixample.</div></div>
+</div>
+<div class="transport-row">
+<div class="transport-option">
+<h5>🚂 Leonardo Express (FCO)</h5>
+<p>Termini → Fiumicino sin paradas. 32 min. Precio: <span class="price-tag">€14</span>. Sale cada 15 min (6:23–23:23). Comprar en Trenitalia.</p>
+</div>
+<div class="transport-option">
+<h5>🚌 Bus (alternativa FCO)</h5>
+<p>Terravision / SIT: <span class="price-tag">€7</span>. Termini → Fiumicino en ~60 min. Comprar online o en parada.</p>
+</div>
+<div class="transport-option">
+<h5>🚇 BCN Aeropuerto → Centro</h5>
+<p>Metro L9 Sud → Zona Universitaria + transbordo. Billete aeropuerto: <span class="price-tag">€5.90</span>. O Aerobús (24h): <span class="price-tag">€6.75</span>. ¡A la 1am el Aerobús sigue funcionando!</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- BCN → MAD -->
+
+<div class="transport-card">
+<div class="transport-head" style="background:var(--madrid)">✈️ Barcelona → Madrid — 3 Junio (aprox.)</div>
+<div class="transport-body">
+<p style="font-size:12px;margin-bottom:12px">ℹ️ No hay reserva específica visible para este tramo. Opciones recomendadas:</p>
+<div class="transport-row">
+<div class="transport-option">
+<h5>✈️ Vuelo ~1h</h5>
+<p>BCN → MAD. Desde €30-60. Vueling / Iberia. Recomendado si tenés equipaje.</p>
+</div>
+<div class="transport-option">
+<h5>🚄 AVE ~2.5h</h5>
+<p>Barcelona Sants → Madrid Atocha. Desde €30-80. Renfe AVE. Muy cómodo.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- MADRID -->
+
+<div id="section-madrid" class="section">
+<div class="city-section">
+<div class="city-header">
+<div class="city-badge" style="background:var(--madrid)"></div>
+<div>
+<div class="city-title">Madrid 🇪🇸</div>
+<div class="city-dates">20-22 Mayo + 3-6 Junio · Airbnb: Calle Fray Ceferino González 7</div>
+</div>
+</div>
+<div class="cards-grid">
+<div class="card">
+<div class="card-head" style="background:var(--madrid)">🚇 Transporte urbano</div>
+<div class="card-body">
+<div class="info-row"><span class="icon">🚇</span><span><strong>Metro:</strong> Billete sencillo €1.50–2.00 (según zonas). T-10 viajes ~€12.20. Horario: 6:00–01:30. Pago con tarjeta o efectivo en máquina.</span></div>
+<div class="info-row"><span class="icon">🚌</span><span><strong>Bus EMT:</strong> Mismo billete que metro. Frecuencia: 5-15 min. Nocturno: Búhos (N-) toda la noche.</span></div>
+<div class="info-row"><span class="icon">🚲</span><span><strong>BiciMAD:</strong> Bicicletas eléctricas. Primer viaje gratis con app. €2/hora después.</span></div>
+<div class="info-row"><span class="icon">🚕</span><span><strong>Taxi/Cabify/Uber:</strong> Disponibles 24h. Bajada bandera ~€2.50.</span></div>
+<div class="info-row"><span class="icon">💳</span><span><strong>Pago:</strong> Tarjeta sin contacto en metro y buses. App Madrid Movilidad.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:var(--madrid)">🎭 Gratis</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Parque del Retiro</span><span class="attr-meta">Gratis · Paseo, lago, jardines. El barco se paga.</span></li>
+<li><span class="attr-name">Puerta del Sol y Gran Vía</span><span class="attr-meta">Gratis · Centro neurálgico. Paseo y arquitectura.</span></li>
+<li><span class="attr-name">Plaza Mayor</span><span class="attr-meta">Gratis · Arquitectura del s. XVII. Mercadillo.</span></li>
+<li><span class="attr-name">Templo de Debod</span><span class="attr-meta">Gratis exterior / €3 interior · Vista espectacular al atardecer.</span></li>
+<li><span class="attr-name">Museo del Prado (lun–sáb 18–20h / dom 17–19h)</span><span class="attr-meta">Gratis en esas horas · Velázquez, Goya, El Bosco.</span></li>
+<li><span class="attr-name">Mercado de San Miguel</span><span class="attr-meta">Gratis entrar · Tapas y gastronomía. Cerca Plaza Mayor.</span></li>
+<li><span class="attr-name">Palacio Real (exterior)</span><span class="attr-meta">Gratis exterior · Interior €14. Cambio de guardia: mié/sáb 11:00.</span></li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:#8b1a1a">🎟️ Pagas</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Museo del Prado</span><span class="attr-meta">€15 · Horario general. La colección más importante del mundo.</span></li>
+<li><span class="attr-name">Museo Reina Sofía</span><span class="attr-meta">€12 · Guernica de Picasso, arte moderno. Gratis lun 19-21h y dom 13:30-19h.</span></li>
+<li><span class="attr-name">Museo Thyssen-Bornemisza</span><span class="attr-meta">€14 · Impresionismo, pop art, renacimiento.</span></li>
+<li><span class="attr-name">Santiago Bernabéu Tour</span><span class="attr-meta">€25-35 · Tour por el estadio del Real Madrid.</span></li>
+<li><span class="attr-name">Mirador Círculo de Bellas Artes</span><span class="attr-meta">€5 · Vistas panorámicas desde la azotea. Gran Vía.</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- BERLIN -->
+
+<div id="section-berlin" class="section">
+<div class="city-section">
+<div class="city-header">
+<div class="city-badge" style="background:var(--berlin)"></div>
+<div>
+<div class="city-title">Berlín 🇩🇪</div>
+<div class="city-dates">20-22 Mayo · BInCty Hotel, Gertrud-Kolmar-Straße 5, Mitte</div>
+</div>
+</div>
+<div class="cards-grid">
+<div class="card">
+<div class="card-head" style="background:var(--berlin)">🚇 Transporte urbano</div>
+<div class="card-body">
+<div class="info-row"><span class="icon">🚇</span><span><strong>U-Bahn (Metro):</strong> Billete sencillo zona AB: <strong>€3.50</strong>. Validez 2h con transbordos. Comprar en máquinas o app BVG.</span></div>
+<div class="info-row"><span class="icon">🚆</span><span><strong>S-Bahn (Cercanías):</strong> Mismo billete. Red extensa, zona A+B cubre todo el centro.</span></div>
+<div class="info-row"><span class="icon">🚃</span><span><strong>Tranvía:</strong> Same ticket. Muy útil en Mitte y Prenzlauer Berg.</span></div>
+<div class="info-row"><span class="icon">🎫</span><span><strong>Día completo:</strong> <strong>€9.90</strong> zona AB, ilimitado 24h. Recomendado.</span></div>
+<div class="info-row"><span class="icon">💳</span><span><strong>Pago:</strong> Tarjeta en máquinas o app BVG. Validar siempre antes de subir (no hay torniquetes, hay revisores).</span></div>
+<div class="info-row"><span class="icon">🚲</span><span><strong>Bicicleta:</strong> Nextbike, Donkey Republic. ~€1/30 min. Muy recomendado en Berlín.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:var(--berlin)">🎭 Gratis</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Memorial del Holocausto</span><span class="attr-meta">Gratis exterior · El subterráneo con info tiene precio. Centro de la ciudad.</span></li>
+<li><span class="attr-name">Puerta de Brandeburgo</span><span class="attr-meta">Gratis · Símbolo de Berlín. Imprescindible.</span></li>
+<li><span class="attr-name">Muro de Berlín (East Side Gallery)</span><span class="attr-meta">Gratis · 1.3 km de murales históricos. Friedrichshain.</span></li>
+<li><span class="attr-name">Alexanderplatz</span><span class="attr-meta">Gratis · Plaza central con Torre de TV (mirador pago €25).</span></li>
+<li><span class="attr-name">Tiergarten</span><span class="attr-meta">Gratis · Gran parque central. Paseo ideal.</span></li>
+<li><span class="attr-name">Reichstag (cúpula)</span><span class="attr-meta">Gratis · ¡Reservar online con antelación! Vistas espectaculares.</span></li>
+<li><span class="attr-name">Free Tour diario</span><span class="attr-meta">Propina libre · Salen desde Puerta de Brandeburgo. En español disponible.</span></li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:#8b1a1a">🎟️ Pagas</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Isla de los Museos</span><span class="attr-meta">€19/museo o pase de día. Pergamon, Neues Museum (busto de Nefertiti), etc.</span></li>
+<li><span class="attr-name">Checkpoint Charlie (museo)</span><span class="attr-meta">€17 · Historia de la Guerra Fría.</span></li>
+<li><span class="attr-name">Topografía del Terror</span><span class="attr-meta">Gratis entrada · Exposición sobre el nazismo.</span></li>
+<li><span class="attr-name">Torre de TV Alexanderplatz</span><span class="attr-meta">€25 · Vista 360° de la ciudad.</span></li>
+<li><span class="attr-name">Excursión a Potsdam</span><span class="attr-meta">€4.70 (tren ABC) + entrada palacio ~€12. 40 min desde Berlín.</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- COPENHAGUE -->
+
+<div id="section-cph" class="section">
+<div class="city-section">
+<div class="city-header">
+<div class="city-badge" style="background:var(--cph)"></div>
+<div>
+<div class="city-title">Copenhague 🇩🇰</div>
+<div class="city-dates">23-26 Mayo · Cabinn City, Mitchellsgade 14</div>
+</div>
+</div>
+<div class="cards-grid">
+<div class="card">
+<div class="card-head" style="background:var(--cph)">🚇 Transporte urbano</div>
+<div class="card-body">
+<div class="info-row"><span class="icon">🚇</span><span><strong>Metro M1/M2:</strong> Billete 2 zonas (centro): <strong>~24 DKK (~€3.20)</strong>. 3 zonas (aeropuerto): 36 DKK (~€5). Funciona 24/7. Frecuencia: cada 2-5 min.</span></div>
+<div class="info-row"><span class="icon">🚆</span><span><strong>S-Tog (tren urbano):</strong> Mismo precio. Conecta más zonas. Estación central (København H).</span></div>
+<div class="info-row"><span class="icon">🚌</span><span><strong>Bus:</strong> Mismo precio metro. Línea 5A: aeropuerto–centro. Conductor cobra en efectivo con cambio exacto.</span></div>
+<div class="info-row"><span class="icon">🎫</span><span><strong>City Pass (24h):</strong> <strong>130 DKK (~€17)</strong> zonas 1-4. Ilimitado en metro, bus y tren. Incluye aeropuerto.</span></div>
+<div class="info-row"><span class="icon">💳</span><span><strong>Pago:</strong> Tarjeta en máquinas de estaciones o app DOT Mobilbilletter. En buses: solo efectivo con cambio.</span></div>
+<div class="info-row"><span class="icon">🚲</span><span><strong>Bicicleta:</strong> Donkey Republic, Bycyklen. Muy recomendado. La ciudad es muy llana y ciclista.</span></div>
+<div class="info-row"><span class="icon">⚠️</span><span><strong>Moneda:</strong> Corona Danesa (DKK). €1 ≈ 7.5 DKK. Usar tarjeta sin comisión.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:var(--cph)">🎭 Gratis</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">La Sirenita (Den lille Havfrue)</span><span class="attr-meta">Gratis · Estatua icónica. 20 min caminando del centro.</span></li>
+<li><span class="attr-name">Nyhavn</span><span class="attr-meta">Gratis · Canal histórico con casas de colores. Foto obligatoria.</span></li>
+<li><span class="attr-name">Palacio de Amalienborg</span><span class="attr-meta">Gratis exterior · Cambio de guardia 12:00. Interior pago.</span></li>
+<li><span class="attr-name">Jardines de Rosenborg (Kongens Have)</span><span class="attr-meta">Gratis · Jardines reales. Palacio de entrada paga.</span></li>
+<li><span class="attr-name">Christiania</span><span class="attr-meta">Gratis · Comunidad libre y alternativa. Cultura única.</span></li>
+<li><span class="attr-name">Free Tour</span><span class="attr-meta">Propina libre · Sale desde Rådhuspladsen. En español.</span></li>
+<li><span class="attr-name">Frederiksberg Have</span><span class="attr-meta">Gratis · Parque romántico con lago.</span></li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:#8b1a1a">🎟️ Pagas</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Tivoli Gardens</span><span class="attr-meta">€17 entrada · Parque de atracciones histórico. Las atracciones son aparte.</span></li>
+<li><span class="attr-name">Museo Nacional de Dinamarca</span><span class="attr-meta">€15 · Historia vikinga y cultura danesa.</span></li>
+<li><span class="attr-name">Louisiana Museum of Modern Art</span><span class="attr-meta">€28 · 45 min en tren. Arte moderno con vista al mar.</span></li>
+<li><span class="attr-name">Palacio de Rosenborg (interior)</span><span class="attr-meta">€15 · Joyas de la corona danesa.</span></li>
+<li><span class="attr-name">Excursión a Malmö (Suecia)</span><span class="attr-meta">~€25 tren round-trip · 35 min de viaje. Cambiar a SEK.</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- NAPOLES -->
+
+<div id="section-napoles" class="section">
+<div class="city-section">
+<div class="city-header">
+<div class="city-badge" style="background:var(--napoles)"></div>
+<div>
+<div class="city-title">Nápoles 🇮🇹</div>
+<div class="city-dates">26-28 Mayo · Pagina Storica di Napoli, Via Carlo de Cesare 64, Plebiscito</div>
+</div>
+</div>
+<div class="cards-grid">
+<div class="card">
+<div class="card-head" style="background:var(--napoles)">🚇 Transporte urbano</div>
+<div class="card-body">
+<div class="info-row"><span class="icon">🚇</span><span><strong>Metro Línea 1 y 2:</strong> Billete sencillo: <strong>€1.50</strong>. Integrado 90 min: €1.80. Día: €5.40. Semana: €16. Horario: 6:00-23:00 (vie/sáb hasta 01:30).</span></div>
+<div class="info-row"><span class="icon">🚌</span><span><strong>Bus ANM:</strong> Mismo billete. Red de 150 líneas. Si comprás a bordo: €2.</span></div>
+<div class="info-row"><span class="icon">🚃</span><span><strong>Circumvesuviana:</strong> Tren a Pompeya (~€2.80, 35 min desde Napoli Centrale) y Sorrento.</span></div>
+<div class="info-row"><span class="icon">🚕</span><span><strong>Taxi:</strong> Blancos con escudo. Bajada bandera: €3.50 (diurno). Centro → destinos fijos. Propina no obligatoria.</span></div>
+<div class="info-row"><span class="icon">💳</span><span><strong>Pago:</strong> Efectivo o tarjeta en estaciones. A bordo: solo efectivo. Validar al subir.</span></div>
+<div class="info-row"><span class="icon">🎫</span><span><strong>Campania Artecard:</strong> €32 por 3 días. Incluye transporte y entradas a sitios arqueológicos (Pompeya, Herculano, Vesubio).</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:var(--napoles)">🎭 Gratis</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Centro Storico (casco histórico UNESCO)</span><span class="attr-meta">Gratis · Spaccanapoli, Via dei Tribunali. Laberinto medieval.</span></li>
+<li><span class="attr-name">Piazza del Plebiscito</span><span class="attr-meta">Gratis · La plaza más grande. Palazzo Reale y Teatro San Carlo al lado.</span></li>
+<li><span class="attr-name">Barrio Español (Quartieri Spagnoli)</span><span class="attr-meta">Gratis · Murales de Maradona. Cultura callejera auténtica.</span></li>
+<li><span class="attr-name">Castel dell'Ovo</span><span class="attr-meta">Gratis · Castillo medieval en la costa. Vista al golfo.</span></li>
+<li><span class="attr-name">Free Tour</span><span class="attr-meta">Propina libre · Guías en español. Sale de Piazza del Gesù Nuovo.</span></li>
+<li><span class="attr-name">Mercado de Porta Nolana</span><span class="attr-meta">Gratis · Mercado de pescado fresco. Colorido y auténtico.</span></li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:#8b1a1a">🎟️ Pagas + excursiones</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Pompeya (excursión)</span><span class="attr-meta">€16 entrada + €2.80 tren Circumvesuviana (35 min). Imperdible. Reservar.</span></li>
+<li><span class="attr-name">Monte Vesubio</span><span class="attr-meta">~€15-20 entrada + transporte. Tours combinados desde €25.</span></li>
+<li><span class="attr-name">Catacumbas di San Gennaro</span><span class="attr-meta">€9 · Historia subterránea de Nápoles.</span></li>
+<li><span class="attr-name">Museo Arqueológico Nacional</span><span class="attr-meta">€15 · Tesoros de Pompeya y Herculano.</span></li>
+<li><span class="attr-name">Capri o Ischia (ferry)</span><span class="attr-meta">€20-25 ida y vuelta desde el puerto. Día completo en isla.</span></li>
+<li><span class="attr-name">Cristo Velado (Cappella Sansevero)</span><span class="attr-meta">€8 · Escultura increíble. ¡Reservar online sí o sí!</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ROMA -->
+
+<div id="section-roma" class="section">
+<div class="city-section">
+<div class="city-header">
+<div class="city-badge" style="background:var(--roma)"></div>
+<div>
+<div class="city-title">Roma 🏛️</div>
+<div class="city-dates">28-30 Mayo · Hotel Alessandrino, Via Clemente Alessandrino 9</div>
+</div>
+</div>
+<div class="cards-grid">
+<div class="card">
+<div class="card-head" style="background:var(--roma)">🚇 Transporte urbano</div>
+<div class="card-body">
+<div class="info-row"><span class="icon">🚇</span><span><strong>Metro (2 líneas: A y B):</strong> Billete 100 min: <strong>€1.50</strong>. Día: €7. 48h: €12.50. 72h: €18. Comprar en máquinas o tabacchi.</span></div>
+<div class="info-row"><span class="icon">🚌</span><span><strong>Bus ATAC:</strong> Mismo billete. 100 min de validez con transbordos. Muchas líneas por todo el centro.</span></div>
+<div class="info-row"><span class="icon">🚃</span><span><strong>Tranvía:</strong> Mismo billete. Línea 8 útil para Trastevere.</span></div>
+<div class="info-row"><span class="icon">🚕</span><span><strong>Taxi:</strong> Blancos oficiales. Bajada bandera €3. Suplemento estación/aeropuerto. Urge pedirlo en parada oficial o app ItTaxi / FREE NOW.</span></div>
+<div class="info-row"><span class="icon">💳</span><span><strong>Pago:</strong> Tarjeta en máquinas automáticas o efectivo. En bus: validar siempre. Revisores frecuentes.</span></div>
+<div class="info-row"><span class="icon">🚲</span><span><strong>Scooter/bici:</strong> Lime, Bird. Para moverse por Trastevere y orillas del Tíber.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head" style="background:var(--roma)">🎭 Gratis</div>
+<div class="card-body">
+<ul class="attraction-list">
+<li><span class="attr-name">Fontana di Trevi</span><span class="attr-meta">Gratis · La fuente más famosa del mundo. Ir de mañana.</span></li>
+<li><span class="attr-name">Plaza Navona</span><span class="attr-meta">Gratis · Fuentes barrocas y ambiente. Artistas callejeros.</span></li>
+<li><span class="attr-name">Panteón</span><span class="attr-meta">€5 · Arquitectura romana perfecta. Antes era gratis.</span></li>
+<li><span class="attr-name">Trastevere</span><span class="attr-meta">Gratis · Barrio más auténtico de Roma. Calles medievales.</span></li>
+<li><span class="attr-name">Campo de' Fiori</span><span class="attr-meta">Gratis · Mercado de mañana, bares de noche.</span></li>
+<li><span class="attr-name">Museos Vaticanos (1er dom del mes)</span><span class="attr-meta">Gratis 1er domingo de mes · Fila enorme. Llegar al abrir.</span></li>
+<li><span class="attr-name">Free Tour</span><span class="attr-meta">Propina libre · En esp
