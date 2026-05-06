@@ -176,9 +176,11 @@ tbody td:first-child{
 .napoles-block{background:var(--napoles)}
 .roma-block   {background:var(--roma)}
 .barna-block  {background:var(--barna)}
-.fly-block    {background:linear-gradient(135deg,#444,#222);font-size:8.5px}
-.train-block  {background:linear-gradient(135deg,#5a8a3a,#3a5a20);font-size:8.5px}
-.bus-block    {background:linear-gradient(135deg,#5a6a9a,#3a4a7a);font-size:8.5px}
+.fly-block      {background:linear-gradient(135deg,#444,#222);font-size:8.5px}
+.train-block    {background:linear-gradient(135deg,#5a8a3a,#3a5a20);font-size:8.5px}
+.bus-block      {background:linear-gradient(135deg,#5a6a9a,#3a4a7a);font-size:8.5px}
+.excursion-block{background:linear-gradient(135deg,#c47a00,#8a5200);font-size:8.5px;border:2px solid #f0d080}
+.excursion-pending{background:linear-gradient(135deg,#888,#555);font-size:8.5px;opacity:.7}
 
 /* CARDS */
 .city-section{margin-bottom:24px}
@@ -351,6 +353,8 @@ tbody td:first-child{
   <div class="legend-item"><div class="legend-dot" style="background:var(--roma)"></div>Roma</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--barna)"></div>Barcelona</div>
   <div class="legend-item"><div class="legend-dot" style="background:#444"></div>Vuelo/Tren/Bus</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c47a00"></div>Excursión reservada</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#888;opacity:.5"></div>Excursión pendiente</div>
 </div>
 
 <div class="tabs">
@@ -457,6 +461,47 @@ tbody td:first-child{
           <td><div class="cell-block barna-block" onclick="switchTab('barna')">🇪🇸 Barcelona</div></td>
           <td><div class="cell-block barna-block" onclick="switchTab('barna')">🇪🇸 Check-out<br>11:00</div></td>
           <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>Excursiones</td>
+          <!-- 19/5 -->
+          <td></td>
+          <!-- 20/5 MAD llegada -->
+          <td></td>
+          <!-- 21/5 MAD -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid')">🗺️ Madrid<br>libre</div></td>
+          <!-- 22/5 MAD -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid')">🗺️ Madrid<br>libre</div></td>
+          <!-- 23/5 CPH llegada -->
+          <td></td>
+          <!-- 24/5 CPH -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-cph')">🗺️ CPH<br>libre</div></td>
+          <!-- 25/5 CPH -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-cph')">🗺️ CPH<br>libre</div></td>
+          <!-- 26/5 NAP llegada -->
+          <td></td>
+          <!-- 27/5 NAP día completo -->
+          <td><div class="cell-block excursion-block" onclick="showModal('modal-exc-nap')">🌋 Pompeya<br>09:00 ✅</div></td>
+          <!-- 28/5 NAP → ROM -->
+          <td></td>
+          <!-- 29/5 ROM -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-roma')">🏟️ Coliseo/<br>Vaticano pend.</div></td>
+          <!-- 30/5 ROM check-out + vuelo noche -->
+          <td></td>
+          <!-- 31/5 BCN llega madrugada -->
+          <td></td>
+          <!-- 1/6 BCN — SAGRADA FAMÍLIA RESERVADA -->
+          <td><div class="cell-block excursion-block" onclick="showModal('modal-exc-sagrada')">⛩️ Sagrada<br>Família 12:30</div></td>
+          <!-- 2/6 -->
+          <td></td>
+          <!-- 3/6 MAD -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid2')">🗺️ Madrid<br>libre</div></td>
+          <!-- 4/6 MAD -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid2')">🗺️ Madrid<br>libre</div></td>
+          <!-- 5/6 MAD -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid2')">🗺️ Madrid<br>libre</div></td>
+          <!-- 6/6 vuelta -->
+          <td></td>
         </tr>
       </tbody>
     </table>
@@ -951,6 +996,98 @@ tbody td:first-child{
       <p><strong>Salida:</strong> 6 Junio 13:15 — Madrid Barajas (MAD)</p>
       <p><strong>Llegada:</strong> 6 Junio 11:30 (+1 día) — Buenos Aires Ezeiza (EZE)</p>
       <div class="modal-note">💡 Salir del Airbnb ~10:00. Metro L8 o Bus 203 al aeropuerto (~45 min). Llegar 3h antes para vuelo internacional.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALES EXCURSIONES -->
+<div class="modal-overlay" id="modal-exc-sagrada" onclick="closeModal(event,'modal-exc-sagrada')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--barna)"><h3>⛩️ Sagrada Família — 1 Junio</h3><button class="modal-close" onclick="closeById('modal-exc-sagrada')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>✅ RESERVA CONFIRMADA</strong></p>
+      <p><strong>Tipo:</strong> Ticket + Audioguía sin Torres</p>
+      <p><strong>Fecha:</strong> 1 de Junio 2026 · 12:30h</p>
+      <p><strong>Cantidad:</strong> 2 adultos</p>
+      <p><strong>Precio total:</strong> €139.80</p>
+      <p><strong>Código de reserva:</strong> 4437073186</p>
+      <p><strong>A nombre de:</strong> Federico de Dios Córdoba</p>
+      <p><strong>Punto de encuentro:</strong> Basílica de la Sagrada Família, C/ de Mallorca 401, 08013 Barcelona</p>
+      <div class="modal-note">⚠️ Los tickets llegarán por email antes de la visita. Verificar bandeja de entrada en fedecordoba129@gmail.com. Llegar 15 min antes.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-exc-madrid" onclick="closeModal(event,'modal-exc-madrid')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--madrid)"><h3>🗺️ Madrid — Excursiones sugeridas</h3><button class="modal-close" onclick="closeById('modal-exc-madrid')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>21 Mayo — Día completo en Madrid</strong></p>
+      <p>🏛️ <strong>Museo del Prado</strong> (€15 o gratis 18–20h)<br>🏛️ <strong>Museo Reina Sofía</strong> (€12 o gratis dom 13:30–19h)<br>🌿 <strong>Parque del Retiro</strong> (gratis)<br>🏰 <strong>Palacio Real</strong> (€14 interior)</p>
+      <p><strong>22 Mayo — Último día antes de Berlín (vuelo 20:10)</strong></p>
+      <p>☀️ Mañana libre para recorrer <strong>Gran Vía, Sol y Malasaña</strong><br>🕌 <strong>Templo de Debod</strong> al atardecer (gratis)<br>⚠️ Regresá al Airbnb antes de las 18:00 para llegar al aeropuerto.</p>
+      <div class="modal-note">💡 Ninguna excursión reservada aún para Madrid. Podés reservar los museos en sus webs oficiales.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-exc-madrid2" onclick="closeModal(event,'modal-exc-madrid2')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--madrid)"><h3>🗺️ Madrid final — 3 al 5 Junio</h3><button class="modal-close" onclick="closeById('modal-exc-madrid2')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>3 Jun</strong> — Llegada desde Barcelona. Tarde libre. <strong>Barrio de La Latina</strong> y tapas.</p>
+      <p><strong>4 Jun</strong> — Día completo. <strong>Toledo o Segovia</strong> (excursión de día, ~€20 tren/bus). O visitar <strong>Thyssen + Bernabéu</strong>.</p>
+      <p><strong>5 Jun</strong> — Último día completo. <strong>Rastro</strong> (si es domingo), Malasaña, Lavapiés. Shopping en Gran Vía.</p>
+      <p><strong>6 Jun</strong> — Vuelo 13:15 → Salir del Airbnb ~10:00.</p>
+      <div class="modal-note">💡 Sin excursiones reservadas para estos días. Buena oportunidad para descansar y disfrutar el ritmo de Madrid.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-exc-cph" onclick="closeModal(event,'modal-exc-cph')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--cph)"><h3>🗺️ Copenhague — Excursiones sugeridas</h3><button class="modal-close" onclick="closeById('modal-exc-cph')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>24 Mayo</strong></p>
+      <p>🚲 Tour en bicicleta por Nyhavn, Sirenita y Palacio de Amalienborg.<br>🎡 <strong>Tivoli Gardens</strong> (€17 entrada) — abren desde las 11:00.<br>🏰 <strong>Palacio de Rosenborg</strong> (€15) — joyas de la corona danesa.</p>
+      <p><strong>25 Mayo</strong></p>
+      <p>🚆 Excursión a <strong>Malmö, Suecia</strong> (~€25 tren round-trip, 35 min).<br>🎨 <strong>Louisiana Museum</strong> (€28, 45 min en tren, arte + vista al mar).<br>🌿 <strong>Christiania</strong> (gratis) — tarde de cultura alternativa.</p>
+      <div class="modal-note">💡 Sin excursiones reservadas en Copenhague. El Tivoli conviene reservar online para evitar filas.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-exc-nap" onclick="closeModal(event,'modal-exc-nap')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--napoles)"><h3>🌋 Pompeya — 27 Mayo</h3><button class="modal-close" onclick="closeById('modal-exc-nap')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>✅ RESERVA CONFIRMADA — Vivaticket</strong></p>
+      <p><strong>Lugar:</strong> Parco Archeologico di Pompei — Grande Pompei</p>
+      <p><strong>Fecha y hora:</strong> 27 de Mayo 2026 · 09:00h</p>
+      <p><strong>Tipo:</strong> Pompei Plus (acceso completo)</p>
+      <p><strong>Referencia:</strong> TL50S1000222384703</p>
+      <p><strong>Tickets:</strong></p>
+      <p>
+        🎫 <strong>Federico de Dios Córdoba</strong><br>
+        &nbsp;&nbsp;→ Grande Pompei €30 · CT: TL50S1000222384703-01<br>
+        &nbsp;&nbsp;→ Pompei Plus €2 · CT: TL50S1000222384703-03<br><br>
+        🎫 <strong>Pedro César Ignacio</strong><br>
+        &nbsp;&nbsp;→ Grande Pompei €30 · CT: TL50S1000222384703-02<br>
+        &nbsp;&nbsp;→ Pompei Plus €2 · CT: TL50S1000222384703-04
+      </p>
+      <p><strong>Precio total:</strong> €64.00 (4 tickets)</p>
+      <div class="modal-note">⚠️ Presentar el PDF impreso o en pantalla al ingreso. Cada ticket admite un solo ingreso. Llegar puntual a las 09:00 — primera entrada del día, menos gente. Desde Nápoles: tren Circumvesuviana desde Napoli Centrale (~35 min, €2.80). Salir del hotel ~07:30.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-exc-roma" onclick="closeModal(event,'modal-exc-roma')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--roma)"><h3>🏟️ Roma — Excursiones sugeridas</h3><button class="modal-close" onclick="closeById('modal-exc-roma')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>29 Mayo — Día completo en Roma</strong></p>
+      <p>🏟️ <strong>Coliseo + Foro Romano + Palatino</strong> — €16–18. Reservar en coopculture.it. Ir de mañana (9:00).<br><br>⛪ <strong>Museos Vaticanos + Capilla Sixtina</strong> — €17–20. Reservar en museivaticani.va. Tarde (14:00).<br><br>🌊 <strong>Fontana di Trevi</strong> al anochecer — gratis, ir después de las 21:00 para menos gente.</p>
+      <div class="modal-note">⚠️ Sin reservas confirmadas para Roma. ¡Reservar URGENTE! En temporada alta mayo se agotan con 2–3 semanas de anticipación.</div>
     </div>
   </div>
 </div>
