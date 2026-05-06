@@ -25,6 +25,7 @@
   --napoles: #e07820;
   --roma: #8b3a62;
   --barna: #1a6b2e;
+  --valencia: #9b1f8a;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -181,6 +182,7 @@ tbody td:first-child{
 .bus-block      {background:linear-gradient(135deg,#5a6a9a,#3a4a7a);font-size:8.5px}
 .excursion-block{background:linear-gradient(135deg,#c47a00,#8a5200);font-size:8.5px;border:2px solid #f0d080}
 .excursion-pending{background:linear-gradient(135deg,#888,#555);font-size:8.5px;opacity:.7}
+.valencia-block {background:var(--valencia)}
 
 /* CARDS */
 .city-section{margin-bottom:24px}
@@ -342,7 +344,7 @@ tbody td:first-child{
 
 <header>
   <h1>✈️ Viaje por Europa — Mayo / Junio 2026</h1>
-  <p>Federico de Dios Córdoba &nbsp;·&nbsp; Santiago Aramburu &nbsp;·&nbsp; César Pedro</p>
+  <p>Federico de Dios Córdoba &nbsp;·&nbsp; César Pedro</p>
 </header>
 
 <div class="legend">
@@ -352,6 +354,7 @@ tbody td:first-child{
   <div class="legend-item"><div class="legend-dot" style="background:var(--napoles)"></div>Nápoles</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--roma)"></div>Roma</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--barna)"></div>Barcelona</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--valencia)"></div>Valencia</div>
   <div class="legend-item"><div class="legend-dot" style="background:#444"></div>Vuelo/Tren/Bus</div>
   <div class="legend-item"><div class="legend-dot" style="background:#c47a00"></div>Excursión reservada</div>
   <div class="legend-item"><div class="legend-dot" style="background:#888;opacity:.5"></div>Excursión pendiente</div>
@@ -366,6 +369,7 @@ tbody td:first-child{
   <button class="tab" onclick="switchTab('napoles')">🇮🇹 Nápoles</button>
   <button class="tab" onclick="switchTab('roma')">🏛️ Roma</button>
   <button class="tab" onclick="switchTab('barna')">🇪🇸 Barcelona</button>
+  <button class="tab" onclick="switchTab('valencia')">🌊 Valencia</button>
 </div>
 
 <!-- ══════════════ GANTT ══════════════ -->
@@ -415,18 +419,19 @@ tbody td:first-child{
         <tr>
           <td>Madrid</td>
           <td></td>
-          <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Llegada<br>17:00</div></td>
-          <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
-          <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
+          <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Escala<br>→ vuelo BER</div></td>
+          <td></td>
+          <td></td>
           <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-          <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid<br>Check-in</div></td>
+          <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Llegada<br>desde VLC</div></td>
           <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
           <td><div class="cell-block madrid-block" onclick="switchTab('madrid')">🇪🇸 Madrid</div></td>
           <td></td>
         </tr>
         <tr>
           <td>Berlín</td>
-          <td></td><td></td>
+          <td></td>
+          <td><div class="cell-block berlin-block" onclick="switchTab('berlin')">🇩🇪 Llegada<br>23:10</div></td>
           <td><div class="cell-block berlin-block" onclick="switchTab('berlin')">🇩🇪 Berlín</div></td>
           <td><div class="cell-block berlin-block" onclick="switchTab('berlin')">🇩🇪 Berlín<br>Check-out 11h</div></td>
           <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
@@ -463,15 +468,29 @@ tbody td:first-child{
           <td></td><td></td><td></td><td></td><td></td>
         </tr>
         <tr>
+          <td>Valencia</td>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          <!-- 1/6 Check-in desde 16:00 -->
+          <td><div class="cell-block valencia-block" onclick="switchTab('valencia')">🌊 Llegada<br>Check-in 16h</div></td>
+          <!-- 2/6 -->
+          <td><div class="cell-block valencia-block" onclick="switchTab('valencia')">🌊 Valencia</div></td>
+          <!-- 3/6 Check-out 11:00 → Madrid -->
+          <td><div class="cell-block valencia-block" onclick="switchTab('valencia')">🌊 Check-out<br>11:00</div></td>
+          <!-- 4/6 MAD -->
+          <td></td>
+          <!-- 5/6 MAD -->
+          <td></td>
+          <!-- 6/6 vuelta -->
+          <td></td>
+        </tr>
+        <tr>
           <td>Excursiones</td>
-          <!-- 19/5 -->
           <td></td>
-          <!-- 20/5 MAD llegada -->
           <td></td>
-          <!-- 21/5 MAD -->
-          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid')">🗺️ Madrid<br>libre</div></td>
-          <!-- 22/5 MAD -->
-          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid')">🗺️ Madrid<br>libre</div></td>
+          <!-- 21/5 BER -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-berlin')">🗺️ Berlín<br>libre</div></td>
+          <!-- 22/5 BER -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-berlin')">🗺️ Berlín<br>libre</div></td>
           <!-- 23/5 CPH llegada -->
           <td></td>
           <!-- 24/5 CPH -->
@@ -480,9 +499,9 @@ tbody td:first-child{
           <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-cph')">🗺️ CPH<br>libre</div></td>
           <!-- 26/5 NAP llegada -->
           <td></td>
-          <!-- 27/5 NAP día completo -->
+          <!-- 27/5 NAP — POMPEYA RESERVADA -->
           <td><div class="cell-block excursion-block" onclick="showModal('modal-exc-nap')">🌋 Pompeya<br>09:00 ✅</div></td>
-          <!-- 28/5 NAP → ROM -->
+          <!-- 28/5 NAP→ROM -->
           <td></td>
           <!-- 29/5 ROM -->
           <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-roma')">🏟️ Coliseo/<br>Vaticano pend.</div></td>
@@ -491,11 +510,11 @@ tbody td:first-child{
           <!-- 31/5 BCN llega madrugada -->
           <td></td>
           <!-- 1/6 BCN — SAGRADA FAMÍLIA RESERVADA -->
-          <td><div class="cell-block excursion-block" onclick="showModal('modal-exc-sagrada')">⛩️ Sagrada<br>Família 12:30</div></td>
-          <!-- 2/6 -->
+          <td><div class="cell-block excursion-block" onclick="showModal('modal-exc-sagrada')">⛩️ Sagrada<br>Família 12:30 ✅</div></td>
+          <!-- 2/6 Valencia -->
+          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-valencia')">🌊 Valencia<br>libre</div></td>
+          <!-- 3/6 Valencia check-out → Madrid -->
           <td></td>
-          <!-- 3/6 MAD -->
-          <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid2')">🗺️ Madrid<br>libre</div></td>
           <!-- 4/6 MAD -->
           <td><div class="cell-block excursion-pending" onclick="showModal('modal-exc-madrid2')">🗺️ Madrid<br>libre</div></td>
           <!-- 5/6 MAD -->
@@ -905,6 +924,55 @@ tbody td:first-child{
   </div>
 </div>
 
+<!-- ══════════════ VALENCIA ══════════════ -->
+<div id="section-valencia" class="section">
+  <div class="city-header">
+    <div class="city-badge" style="background:var(--valencia)"></div>
+    <div><div class="city-title">Valencia 🌊</div><div class="city-dates">1–3 Junio · Airbnb Armin, Carrer de Carles Cervera 10</div></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-head" style="background:var(--valencia)">🚇 Transporte urbano</div>
+      <div class="card-body">
+        <div class="info-row"><span class="icon">🚇</span><span><strong>Metro EMT:</strong> Billete sencillo: <strong>€1.50</strong>. Bono 10 viajes: €8.50. Horario: 5:30–23:30 (vie/sáb hasta 00:30). Línea 5 y 7 muy útiles para el centro.</span></div>
+        <div class="info-row"><span class="icon">🚌</span><span><strong>Bus EMT:</strong> Mismo billete. Red amplia. Línea 19 conecta playa (Malvarrosa) con el centro.</span></div>
+        <div class="info-row"><span class="icon">🚲</span><span><strong>Valenbisi (bicicletas):</strong> Registro por semana ~€13.30. Primeros 30 min gratis. Más de 276 estaciones. Muy recomendado.</span></div>
+        <div class="info-row"><span class="icon">🛴</span><span><strong>Patinetes Lime/Voi:</strong> ~€1 desbloqueo + €0.25/min. Ideal para el Jardín del Turia.</span></div>
+        <div class="info-row"><span class="icon">🚕</span><span><strong>Taxi/Cabify/Uber:</strong> Disponibles 24h. Bajada bandera ~€3.50.</span></div>
+        <div class="info-row"><span class="icon">💳</span><span><strong>Pago:</strong> Tarjeta contactless en máquinas o app Metrovalencia.</span></div>
+        <div class="info-row"><span class="icon">🚆</span><span><strong>Tren a Madrid (vuelta):</strong> Valencia Joaquín Sorolla → Madrid Atocha. AVE 1h 35min. Desde €15. O bus Alsa ~4h desde €10.</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head" style="background:var(--valencia)">🎭 Gratis</div>
+      <div class="card-body">
+        <ul class="attraction-list">
+          <li><span class="attr-name">Ciudad de las Artes y las Ciencias (exterior)</span><span class="attr-meta">Gratis · Arquitectura espectacular de Calatrava. Perfecta para fotos.</span></li>
+          <li><span class="attr-name">Jardín del Turia</span><span class="attr-meta">Gratis · 9 km de parque verde en el antiguo río. En bici es ideal.</span></li>
+          <li><span class="attr-name">Barrio del Carmen</span><span class="attr-meta">Gratis · Casco histórico medieval. Arte urbano y street food.</span></li>
+          <li><span class="attr-name">Plaza de la Virgen y Catedral (exterior)</span><span class="attr-meta">Gratis exterior · La Catedral guarda el Santo Grial.</span></li>
+          <li><span class="attr-name">Mercado Central (exterior)</span><span class="attr-meta">Gratis entrar · El mercado modernista más grande de Europa. Imperdible.</span></li>
+          <li><span class="attr-name">Playa de la Malvarrosa</span><span class="attr-meta">Gratis · Playa urbana de arena fina. Bus 19 desde el centro.</span></li>
+          <li><span class="attr-name">Free Tour</span><span class="attr-meta">Propina · Desde Plaza de la Reina. En español.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head" style="background:#8b1a1a">🎟️ Pagas</div>
+      <div class="card-body">
+        <ul class="attraction-list">
+          <li><span class="attr-name">Ciudad de las Artes y Ciencias (interior)</span><span class="attr-meta">Combo Oceanogràfic + Hemisféric: ~€40. Solo Oceanogràfic: €32 · El acuario más grande de Europa.</span></li>
+          <li><span class="attr-name">Catedral de Valencia (interior)</span><span class="attr-meta">€8 · El Santo Grial. Subir al Miguelete: +€2.</span></li>
+          <li><span class="attr-name">Museo de Bellas Artes</span><span class="attr-meta">Gratis · Pinturas del s. XIV al XX. Sorolla y Velázquez.</span></li>
+          <li><span class="attr-name">Bioparc Valencia</span><span class="attr-meta">€25 · Zoo de inmersión con animales africanos.</span></li>
+          <li><span class="attr-name">Experiencia paella en Valencia</span><span class="attr-meta">~€60–80 pp · Tour gastronómico + cocinar paella auténtica. Vale la pena.</span></li>
+          <li><span class="attr-name">Albufera (excursión)</span><span class="attr-meta">~€20 tour · Lago natural, arrozales y barco. A 15 km del centro.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODALES -->
 <div class="modal-overlay" id="modal-fly1" onclick="closeModal(event,'modal-fly1')">
   <div class="modal">
@@ -1092,9 +1160,32 @@ tbody td:first-child{
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-exc-berlin" onclick="closeModal(event,'modal-exc-berlin')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--berlin)"><h3>🗺️ Berlín — Excursiones sugeridas</h3><button class="modal-close" onclick="closeById('modal-exc-berlin')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>21 Mayo</strong> — Llegaron tarde la noche anterior. Mañana tranquila. <strong>Puerta de Brandeburgo</strong> + <strong>Memorial del Holocausto</strong> (gratis). Tarde: <strong>East Side Gallery</strong> (Muro, gratis) + barrio Friedrichshain.</p>
+      <p><strong>22 Mayo</strong> — Día completo. <strong>Isla de los Museos</strong> (€19/museo) o <strong>Reichstag</strong> (gratis, reservar online). Tarde: <strong>Alexanderplatz</strong> + subir Torre de TV (€25). Noche en Kreuzberg.</p>
+      <div class="modal-note">💡 Sin excursiones reservadas en Berlín. Reichstag requiere reserva online con días de antelación. Recordá: el 23/5 el FlixBus sale a las 02:10, así que la noche del 22 es de preparar valijas.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-exc-valencia" onclick="closeModal(event,'modal-exc-valencia')">
+  <div class="modal">
+    <div class="modal-head" style="background:var(--valencia)"><h3>🌊 Valencia — Excursiones sugeridas</h3><button class="modal-close" onclick="closeById('modal-exc-valencia')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>1 Jun</strong> — Check-in ~16:00 en Carrer de Carles Cervera 10. Tarde: recorrer <strong>Barrio del Carmen</strong> y la <strong>Plaza de la Virgen</strong>.</p>
+      <p><strong>2 Jun</strong> — Día completo. Mañana: <strong>Ciudad de las Artes y las Ciencias</strong> (exterior gratis o interior €32–40). Tarde: <strong>Playa Malvarrosa</strong> + cena con paella auténtica.</p>
+      <p><strong>3 Jun</strong> — Check-out 11:00. Mañana: <strong>Mercado Central</strong> (abren 7:30). Luego tren AVE a Madrid (1h 35min desde Valencia Joaquín Sorolla, desde €15).</p>
+      <div class="modal-note">💡 Sin excursiones reservadas en Valencia. Recomendado: reservar online el Oceanogràfic si van al interior (colas largas). La Albufera conviene en tour organizado (~€20).</div>
+    </div>
+  </div>
+</div>
+
 <script>
 function switchTab(id){
-  var ids=['gantt','transport','madrid','berlin','cph','napoles','roma','barna'];
+  var ids=['gantt','transport','madrid','berlin','cph','napoles','roma','barna','valencia'];
   var tabs=document.querySelectorAll('.tab');
   tabs.forEach(function(t,i){ t.classList.toggle('active', ids[i]===id); });
   document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
